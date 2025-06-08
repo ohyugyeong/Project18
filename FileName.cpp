@@ -12,7 +12,7 @@
 
 void printCatArt();
 void clearScreen();
-void printStatus(int soupCount, int friendship, const char* catName, int mood);
+void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain);
 void printMoodDesc(int mood);
 void printRoom(int catPos, int prevPos);
 void printFriendshipDesc(int friendship);
@@ -27,7 +27,7 @@ int main() {
 
     char* catName = (char*)malloc(20);
     if (catName == NULL) {
-        printf("메모리 할당 실패\n");
+        printf("\n메모리 할당 실패\n");
         return 1;
     }
 
@@ -37,6 +37,8 @@ int main() {
     int prevPos = CAT_HOME;
     int mood = 3;
     int threshold = 0;
+    int cpPoint = 0;
+    int cpGain = 0;
 
     printf("**** 야옹이와 수프 ****\n");
     printCatArt();
@@ -54,11 +56,11 @@ int main() {
     clearScreen();
 
     while (1) {
-        printStatus(soupCount, friendship, catName, mood);
+        printStatus(soupCount, friendship, catName, mood, cpPoint, 0);
 
         threshold = 6 - friendship;
         int moodDice = rollDice();
-        printf("6-%d: %d이하이면 그냥 기분이 나빠집니다.\n", friendship, threshold);
+        printf("6-%d: 주사위 눈이 %d이하이면 그냥 기분이 나빠집니다.\n", friendship, threshold);
         printf("주사위를 굴립니다. 또르르...\n");
         wait(1500);
         printf("%d이(가) 나왔습니다!\n", moodDice);
@@ -109,10 +111,14 @@ int main() {
         wait(1000);
 
         clearScreen();
-        printStatus(soupCount, friendship, catName, mood);
+        printStatus(soupCount, friendship, catName, mood, cpPoint, cpGain);
 
         prevPos = catPos;
         moveCat(&catPos, &mood, &soupCount, catName, prevPos);
+
+        cpGain = (mood > 1 ? mood - 1 : 0) + friendship;
+        cpPoint += cpGain;
+        wait(1500);
     }
 
     free(catName);
@@ -171,7 +177,7 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
     }
 
     printRoom(*catPos, prevPos);
-    wait(3000);
+    wait(2000);
     clearScreen();
 }
 
@@ -192,13 +198,15 @@ void clearScreen() {
     system("cls");
 }
 
-void printStatus(int soupCount, int friendship, const char* catName, int mood) {
+void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain) {
     printf("==================== 현재 상태 ===================\n");
     printf("현재까지 만든 수프: %d개\n", soupCount);
     printf("%s이 기분(0~3): %d\n", catName, mood);
     printMoodDesc(mood);
     printf("집사와의 관계(0~4): %d\n", friendship);
     printFriendshipDesc(friendship);
+    printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n", catName, cpGain);
+    printf("보유 CP: %d 포인트\n", cpPoint);
     printf("==================================================\n\n");
 }
 
