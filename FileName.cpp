@@ -7,6 +7,7 @@
 #define MAP_WIDTH 10
 #define CAT_HOME 1
 #define SOUP_POT 8
+#define SCRATCHER_POS 5
 #define INIT_FRIENDSHIP 2
 
 void printCatArt();
@@ -19,6 +20,7 @@ int getInteractionChoice();
 int rollDice();
 void wait(int ms);
 const char* getRandomSoup();
+void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos);
 
 int main() {
     srand((unsigned int)time(NULL));
@@ -108,52 +110,69 @@ int main() {
 
         clearScreen();
         printStatus(soupCount, friendship, catName, mood);
-        printf("%s 이동: 집사와 친밀할수록 냄비 쪽으로 갈 확률이 높아집니다.\n", catName);
-        threshold = 6 - friendship; // 재선언 X, 값만 갱신
-        printf("주사위 눈이 %d 이상이면 냄비 쪽으로 이동합니다.\n", threshold);
-        int dice = rollDice();
-        wait(500);
-        printf("주사위를 굴립니다. 또르르...\n");
-        wait(500);
-        printf("%d이(가) 나왔습니다!\n", dice);
 
         prevPos = catPos;
-        int moveDistance = 0;
-
-        if (dice >= threshold) {
-            if (catPos < SOUP_POT) {
-                moveDistance = 1;
-                catPos += moveDistance;
-                if (catPos > SOUP_POT) catPos = SOUP_POT;
-                printf("냄비 쪽으로 움직입니다.\n\n");
-            }
-        }
-        else {
-            if (catPos > CAT_HOME) {
-                moveDistance = 1;
-                catPos -= moveDistance;
-                if (catPos < CAT_HOME) catPos = CAT_HOME;
-                printf("집 쪽으로 움직입니다.\n\n");
-            }
-        }
-
-        if (catPos == CAT_HOME) {
-            printf("%s은(는) 자신의 집에서 편안함을 느낍니다.\n\n", catName);
-        }
-        else if (catPos == SOUP_POT) {
-            const char* soup = getRandomSoup();
-            printf("%s이(가) %s를 만들었습니다!\n", catName, soup);
-            soupCount++;
-            printf("현재까지 만든 수프: %d개\n\n", soupCount);
-        }
-
-        printRoom(catPos, prevPos);
-        wait(3000);
-        clearScreen();
+        moveCat(&catPos, &mood, &soupCount, catName, prevPos);
     }
 
     free(catName);
     return 0;
+}
+
+void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos) {
+    int currentPos = *catPos;
+
+    if (*mood == 0) {
+        if (currentPos > CAT_HOME) {
+            (*catPos)--;
+            printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n\n", catName);
+        }
+        else {
+            printf("%s은(는) 이미 집에 있습니다. 제자리에 머뭅니다.\n\n", catName);
+        }
+    }
+    else if (*mood == 1) {
+        if (SCRATCHER_POS > 0 && SCRATCHER_POS < MAP_WIDTH - 1) {
+            if (currentPos < SCRATCHER_POS) {
+                (*catPos)++;
+                printf("%s은(는) 심심해서 스크래처쪽으로 이동합니다.\n\n", catName);
+            }
+            else if (currentPos > SCRATCHER_POS) {
+                (*catPos)--;
+                printf("%s은(는) 심심해서 스크래처쪽으로 이동합니다.\n\n", catName);
+            }
+            else {
+                printf("%s은(는) 스크래처 앞에 이미 있습니다. 제자리에 머뭅니다.\n\n", catName);
+            }
+        }
+        else {
+            printf("놀거리가 없어서 기분이 매우 나빠집니다.\n\n");
+            if (*mood > 0) (*mood)--;
+        }
+    }
+    else if (*mood == 2) {
+        printf("%s은(는) 기분 좋게 식빵을 굽고 있습니다.\n\n", catName);
+    }
+    else if (*mood == 3) {
+        if (currentPos < SOUP_POT) {
+            (*catPos)++;
+            printf("%s은(는) 골골송을 부르며 수프를 만들러 갑니다.\n\n", catName);
+        }
+        else {
+            printf("%s은(는) 이미 냄비 앞에 있습니다. 제자리에 머뭅니다.\n\n", catName);
+        }
+    }
+
+    if (*catPos == SOUP_POT && currentPos != SOUP_POT) {
+        const char* soup = getRandomSoup();
+        printf("%s이(가) %s를 만들었습니다!\n", catName, soup);
+        (*soupCount)++;
+        printf("현재까지 만든 수프: %d개\n\n", *soupCount);
+    }
+
+    printRoom(*catPos, prevPos);
+    wait(3000);
+    clearScreen();
 }
 
 void printCatArt() {
@@ -223,9 +242,7 @@ int getInteractionChoice() {
             continue;
         }
 
-        if (choice == 0 || choice == 1) {
-            break;
-        }
+        if (choice == 0 || choice == 1) break;
     }
 
     return choice;
