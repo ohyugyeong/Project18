@@ -11,7 +11,8 @@
 
 void printCatArt();
 void clearScreen();
-void printStatus(int soupCount, int friendship);
+void printStatus(int soupCount, int friendship, const char* catName, int mood);
+void printMoodDesc(int mood);
 void printRoom(int catPos, int prevPos);
 void printFriendshipDesc(int friendship);
 int getInteractionChoice();
@@ -32,6 +33,8 @@ int main() {
     int friendship = INIT_FRIENDSHIP;
     int catPos = CAT_HOME;
     int prevPos = CAT_HOME;
+    int mood = 3;
+    int threshold = 0;
 
     printf("**** 야옹이와 수프 ****\n");
     printCatArt();
@@ -49,8 +52,21 @@ int main() {
     clearScreen();
 
     while (1) {
-        printStatus(soupCount, friendship);
-        printRoom(catPos, prevPos);
+        printStatus(soupCount, friendship, catName, mood);
+
+        threshold = 6 - friendship;
+        int moodDice = rollDice();
+        printf("6-%d: %d이하이면 그냥 기분이 나빠집니다.\n", friendship, threshold);
+        printf("주사위를 굴립니다. 또르르...\n");
+        wait(1500);
+        printf("%d이(가) 나왔습니다!\n", moodDice);
+
+        if (moodDice <= threshold) {
+            if (mood > 0) {
+                printf("%s의 기분이 나빠집니다: %d → %d\n", catName, mood, mood - 1);
+                mood--;
+            }
+        }
 
         int choice = getInteractionChoice();
 
@@ -59,7 +75,7 @@ int main() {
             printf("4/6의 확률로 친밀도가 떨어집니다.\n");
             wait(500);
             int dice = rollDice();
-            printf("주사위를 굴립니다. 또르륵...\n");
+            printf("주사위를 굴립니다. 또르르...\n");
             wait(500);
             printf("%d이(가) 나왔습니다!\n", dice);
             if (dice <= 4) {
@@ -75,7 +91,7 @@ int main() {
             printf("2/6의 확률로 친밀도가 높아집니다.\n");
             wait(500);
             int dice = rollDice();
-            printf("주사위를 굴립니다. 또르륵...\n");
+            printf("주사위를 굴립니다. 또르르...\n");
             wait(500);
             printf("%d이(가) 나왔습니다!\n", dice);
             if (dice >= 5) {
@@ -91,13 +107,13 @@ int main() {
         wait(1000);
 
         clearScreen();
-        printStatus(soupCount, friendship);
+        printStatus(soupCount, friendship, catName, mood);
         printf("%s 이동: 집사와 친밀할수록 냄비 쪽으로 갈 확률이 높아집니다.\n", catName);
-        int threshold = 6 - friendship;
+        threshold = 6 - friendship; // 재선언 X, 값만 갱신
         printf("주사위 눈이 %d 이상이면 냄비 쪽으로 이동합니다.\n", threshold);
         int dice = rollDice();
         wait(500);
-        printf("주사위를 굴립니다. 또르륵...\n");
+        printf("주사위를 굴립니다. 또르르...\n");
         wait(500);
         printf("%d이(가) 나왔습니다!\n", dice);
 
@@ -132,7 +148,7 @@ int main() {
         }
 
         printRoom(catPos, prevPos);
-        wait(2500);
+        wait(3000);
         clearScreen();
     }
 
@@ -157,12 +173,23 @@ void clearScreen() {
     system("cls");
 }
 
-void printStatus(int soupCount, int friendship) {
+void printStatus(int soupCount, int friendship, const char* catName, int mood) {
     printf("==================== 현재 상태 ===================\n");
     printf("현재까지 만든 수프: %d개\n", soupCount);
+    printf("%s이 기분(0~3): %d\n", catName, mood);
+    printMoodDesc(mood);
     printf("집사와의 관계(0~4): %d\n", friendship);
     printFriendshipDesc(friendship);
     printf("==================================================\n\n");
+}
+
+void printMoodDesc(int mood) {
+    switch (mood) {
+    case 0: printf("기분이 매우 나쁩니다.\n"); break;
+    case 1: printf("심심해합니다.\n"); break;
+    case 2: printf("식빵을 굽습니다.\n"); break;
+    case 3: printf("골골송을 부릅니다.\n"); break;
+    }
 }
 
 void printFriendshipDesc(int friendship) {
