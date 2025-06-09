@@ -265,7 +265,6 @@ int getInteractionChoice(int hasMouse, int hasLaser) {
         if (choice >= 0 && choice <= maxChoice)
             return choice;
 
-        printf("잘못된 입력입니다. 다시 선택해주세요.\n");
     }
 }
 
