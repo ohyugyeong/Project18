@@ -1,4 +1,4 @@
-#include <stdio.h>
+ï»¿#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
@@ -16,7 +16,7 @@ void printStatus(int soupCount, int friendship, const char* catName, int mood, i
 void printMoodDesc(int mood);
 void printRoom(int catPos, int prevPos);
 void printFriendshipDesc(int friendship);
-int getInteractionChoice();
+int getInteractionChoice(int hasMouse, int hasLaser);
 int rollDice();
 void wait(int ms);
 const char* getRandomSoup();
@@ -28,7 +28,7 @@ int main() {
 
     char* catName = (char*)malloc(20);
     if (catName == NULL) {
-        printf("\n¸Ş¸ğ¸® ÇÒ´ç ½ÇÆĞ\n");
+        printf("\në©”ëª¨ë¦¬ í• ë‹¹ ì‹¤íŒ¨\n");
         return 1;
     }
 
@@ -43,18 +43,18 @@ int main() {
     int hasMouse = 0, hasLaser = 0, hasScratcher = 0, hasTower = 0;
     int getInteractionChoice(int hasMouse, int hasLaser);
 
-    printf("**** ¾ß¿ËÀÌ¿Í ¼öÇÁ ****\n");
+    printf("**** ì•¼ì˜¹ì´ì™€ ìˆ˜í”„ ****\n");
     printCatArt();
 
-    printf("¾ß¿ËÀÌÀÇ ÀÌ¸§À» Áö¾îÁÖ¼¼¿ä: ");
+    printf("ì•¼ì˜¹ì´ì˜ ì´ë¦„ì„ ì§€ì–´ì£¼ì„¸ìš”: ");
     if (fgets(catName, 20, stdin) == NULL) {
-        printf("ÀÔ·Â ¿À·ù ¹ß»ı. ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù.\n");
+        printf("ì…ë ¥ ì˜¤ë¥˜ ë°œìƒ. í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤.\n");
         free(catName);
         return 1;
     }
 
     catName[strcspn(catName, "\n")] = '\0';
-    printf("¾ß¿ËÀÌÀÇ ÀÌ¸§Àº %sÀÔ´Ï´Ù.\n", catName);
+    printf("ì•¼ì˜¹ì´ì˜ ì´ë¦„ì€ %sì…ë‹ˆë‹¤.\n", catName);
     Sleep(1000);
     clearScreen();
 
@@ -63,14 +63,14 @@ int main() {
 
         threshold = 6 - friendship;
         int moodDice = rollDice();
-        printf("6-%d: ÁÖ»çÀ§ ´«ÀÌ %dÀÌÇÏÀÌ¸é ±×³É ±âºĞÀÌ ³ªºüÁı´Ï´Ù.\n", friendship, threshold);
-        printf("ÁÖ»çÀ§¸¦ ±¼¸³´Ï´Ù. ¶Ç¸£¸£...\n");
+        printf("6-%d: ì£¼ì‚¬ìœ„ ëˆˆì´ %dì´í•˜ì´ë©´ ê·¸ëƒ¥ ê¸°ë¶„ì´ ë‚˜ë¹ ì§‘ë‹ˆë‹¤.\n", friendship, threshold);
+        printf("ì£¼ì‚¬ìœ„ë¥¼ êµ´ë¦½ë‹ˆë‹¤. ë˜ë¥´ë¥´...\n");
         wait(1500);
-        printf("%dÀÌ(°¡) ³ª¿Ô½À´Ï´Ù!\n", moodDice);
+        printf("%dì´(ê°€) ë‚˜ì™”ìŠµë‹ˆë‹¤!\n", moodDice);
 
         if (moodDice <= threshold) {
             if (mood > 0) {
-                printf("%sÀÇ ±âºĞÀÌ ³ªºüÁı´Ï´Ù: %d ¡æ %d\n", catName, mood, mood - 1);
+                printf("%sì˜ ê¸°ë¶„ì´ ë‚˜ë¹ ì§‘ë‹ˆë‹¤: %d â†’ %d\n", catName, mood, mood - 1);
                 mood--;
             }
         }
@@ -78,39 +78,39 @@ int main() {
         int choice = getInteractionChoice(hasMouse, hasLaser);
 
         if (choice == 0) {
-            printf("¾Æ¹«°Íµµ ÇÏÁö ¾Ê½À´Ï´Ù.\n");
-            printf("4/6ÀÇ È®·ü·Î Ä£¹Ğµµ°¡ ¶³¾îÁı´Ï´Ù.\n");
+            printf("ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.\n");
+            printf("4/6ì˜ í™•ë¥ ë¡œ ì¹œë°€ë„ê°€ ë–¨ì–´ì§‘ë‹ˆë‹¤.\n");
             wait(500);
             int dice = rollDice();
-            printf("ÁÖ»çÀ§¸¦ ±¼¸³´Ï´Ù. ¶Ç¸£¸£...\n");
+            printf("ì£¼ì‚¬ìœ„ë¥¼ êµ´ë¦½ë‹ˆë‹¤. ë˜ë¥´ë¥´...\n");
             wait(500);
-            printf("%dÀÌ(°¡) ³ª¿Ô½À´Ï´Ù!\n", dice);
+            printf("%dì´(ê°€) ë‚˜ì™”ìŠµë‹ˆë‹¤!\n", dice);
             if (dice <= 4) {
                 if (friendship > 0) friendship--;
-                printf("Ä£¹Ğµµ°¡ ¶³¾îÁı´Ï´Ù.\n");
+                printf("ì¹œë°€ë„ê°€ ë–¨ì–´ì§‘ë‹ˆë‹¤.\n");
             }
             else {
-                printf("´ÙÇàÈ÷ Ä£¹Ğµµ°¡ ¶³¾îÁöÁö ¾Ê¾Ò½À´Ï´Ù.\n");
+                printf("ë‹¤í–‰íˆ ì¹œë°€ë„ê°€ ë–¨ì–´ì§€ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\n");
             }
         }
         else if (choice == 1) {
-            printf("%sÀÇ ÅÎÀ» ±Ü¾îÁÖ¾ú½À´Ï´Ù.\n", catName);
-            printf("2/6ÀÇ È®·ü·Î Ä£¹Ğµµ°¡ ³ô¾ÆÁı´Ï´Ù.\n");
+            printf("%sì˜ í„±ì„ ê¸ì–´ì£¼ì—ˆìŠµë‹ˆë‹¤.\n", catName);
+            printf("2/6ì˜ í™•ë¥ ë¡œ ì¹œë°€ë„ê°€ ë†’ì•„ì§‘ë‹ˆë‹¤.\n");
             wait(500);
             int dice = rollDice();
-            printf("ÁÖ»çÀ§¸¦ ±¼¸³´Ï´Ù. ¶Ç¸£¸£...\n");
+            printf("ì£¼ì‚¬ìœ„ë¥¼ êµ´ë¦½ë‹ˆë‹¤. ë˜ë¥´ë¥´...\n");
             wait(500);
-            printf("%dÀÌ(°¡) ³ª¿Ô½À´Ï´Ù!\n", dice);
+            printf("%dì´(ê°€) ë‚˜ì™”ìŠµë‹ˆë‹¤!\n", dice);
             if (dice >= 5) {
                 if (friendship < 4) friendship++;
-                printf("Ä£¹Ğµµ°¡ ³ô¾ÆÁı´Ï´Ù.\n");
+                printf("ì¹œë°€ë„ê°€ ë†’ì•„ì§‘ë‹ˆë‹¤.\n");
             }
             else {
-                printf("Ä£¹Ğµµ´Â ±×´ë·ÎÀÔ´Ï´Ù.\n");
+                printf("ì¹œë°€ë„ëŠ” ê·¸ëŒ€ë¡œì…ë‹ˆë‹¤.\n");
             }
         }
 
-        printf("ÇöÀç Ä£¹Ğµµ: %d\n", friendship);
+        printf("í˜„ì¬ ì¹œë°€ë„: %d\n", friendship);
         wait(1000);
 
         clearScreen();
@@ -137,49 +137,49 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
     if (*mood == 0) {
         if (currentPos > CAT_HOME) {
             (*catPos)--;
-            printf("±âºĞÀÌ ¸Å¿ì ³ª»Û %sÀº(´Â) ÁıÀ¸·Î ÇâÇÕ´Ï´Ù.\n\n", catName);
+            printf("ê¸°ë¶„ì´ ë§¤ìš° ë‚˜ìœ %sì€(ëŠ”) ì§‘ìœ¼ë¡œ í–¥í•©ë‹ˆë‹¤.\n\n", catName);
         }
         else {
-            printf("%sÀº(´Â) ÀÌ¹Ì Áı¿¡ ÀÖ½À´Ï´Ù. Á¦ÀÚ¸®¿¡ ¸Ó¹´´Ï´Ù.\n\n", catName);
+            printf("%sì€(ëŠ”) ì´ë¯¸ ì§‘ì— ìˆìŠµë‹ˆë‹¤. ì œìë¦¬ì— ë¨¸ë­…ë‹ˆë‹¤.\n\n", catName);
         }
     }
     else if (*mood == 1) {
         if (SCRATCHER_POS > 0 && SCRATCHER_POS < MAP_WIDTH - 1) {
             if (currentPos < SCRATCHER_POS) {
                 (*catPos)++;
-                printf("%sÀº(´Â) ½É½ÉÇØ¼­ ½ºÅ©·¡Ã³ÂÊÀ¸·Î ÀÌµ¿ÇÕ´Ï´Ù.\n\n", catName);
+                printf("%sì€(ëŠ”) ì‹¬ì‹¬í•´ì„œ ìŠ¤í¬ë˜ì²˜ìª½ìœ¼ë¡œ ì´ë™í•©ë‹ˆë‹¤.\n\n", catName);
             }
             else if (currentPos > SCRATCHER_POS) {
                 (*catPos)--;
-                printf("%sÀº(´Â) ½É½ÉÇØ¼­ ½ºÅ©·¡Ã³ÂÊÀ¸·Î ÀÌµ¿ÇÕ´Ï´Ù.\n\n", catName);
+                printf("%sì€(ëŠ”) ì‹¬ì‹¬í•´ì„œ ìŠ¤í¬ë˜ì²˜ìª½ìœ¼ë¡œ ì´ë™í•©ë‹ˆë‹¤.\n\n", catName);
             }
             else {
-                printf("%sÀº(´Â) ½ºÅ©·¡Ã³ ¾Õ¿¡ ÀÌ¹Ì ÀÖ½À´Ï´Ù. Á¦ÀÚ¸®¿¡ ¸Ó¹´´Ï´Ù.\n\n", catName);
+                printf("%sì€(ëŠ”) ìŠ¤í¬ë˜ì²˜ ì•ì— ì´ë¯¸ ìˆìŠµë‹ˆë‹¤. ì œìë¦¬ì— ë¨¸ë­…ë‹ˆë‹¤.\n\n", catName);
             }
         }
         else {
-            printf("³î°Å¸®°¡ ¾ø¾î¼­ ±âºĞÀÌ ¸Å¿ì ³ªºüÁı´Ï´Ù.\n\n");
+            printf("ë†€ê±°ë¦¬ê°€ ì—†ì–´ì„œ ê¸°ë¶„ì´ ë§¤ìš° ë‚˜ë¹ ì§‘ë‹ˆë‹¤.\n\n");
             if (*mood > 0) (*mood)--;
         }
     }
     else if (*mood == 2) {
-        printf("%sÀº(´Â) ±âºĞ ÁÁ°Ô ½Ä»§À» ±Á°í ÀÖ½À´Ï´Ù.\n\n", catName);
+        printf("%sì€(ëŠ”) ê¸°ë¶„ ì¢‹ê²Œ ì‹ë¹µì„ êµ½ê³  ìˆìŠµë‹ˆë‹¤.\n\n", catName);
     }
     else if (*mood == 3) {
         if (currentPos < SOUP_POT) {
             (*catPos)++;
-            printf("%sÀº(´Â) °ñ°ñ¼ÛÀ» ºÎ¸£¸ç ¼öÇÁ¸¦ ¸¸µé·¯ °©´Ï´Ù.\n\n", catName);
+            printf("%sì€(ëŠ”) ê³¨ê³¨ì†¡ì„ ë¶€ë¥´ë©° ìˆ˜í”„ë¥¼ ë§Œë“¤ëŸ¬ ê°‘ë‹ˆë‹¤.\n\n", catName);
         }
         else {
-            printf("%sÀº(´Â) ÀÌ¹Ì ³¿ºñ ¾Õ¿¡ ÀÖ½À´Ï´Ù. Á¦ÀÚ¸®¿¡ ¸Ó¹´´Ï´Ù.\n\n", catName);
+            printf("%sì€(ëŠ”) ì´ë¯¸ ëƒ„ë¹„ ì•ì— ìˆìŠµë‹ˆë‹¤. ì œìë¦¬ì— ë¨¸ë­…ë‹ˆë‹¤.\n\n", catName);
         }
     }
 
     if (*catPos == SOUP_POT && currentPos != SOUP_POT) {
         const char* soup = getRandomSoup();
-        printf("%sÀÌ(°¡) %s¸¦ ¸¸µé¾ú½À´Ï´Ù!\n", catName, soup);
+        printf("%sì´(ê°€) %së¥¼ ë§Œë“¤ì—ˆìŠµë‹ˆë‹¤!\n", catName, soup);
         (*soupCount)++;
-        printf("ÇöÀç±îÁö ¸¸µç ¼öÇÁ: %d°³\n\n", *soupCount);
+        printf("í˜„ì¬ê¹Œì§€ ë§Œë“  ìˆ˜í”„: %dê°œ\n\n", *soupCount);
     }
 
     printRoom(*catPos, prevPos);
@@ -189,14 +189,14 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
 
 void printCatArt() {
     printf("\n");
-    printf("      £¯£¾¡ª «Õ\n");
-    printf("     | ¡¡_¡¡_| \n");
-    printf("    £¯ «ß£ßx«Î\n");
-    printf("   /¡¡¡¡¡¡¡¡ | \n");
-    printf("  /¡¡ ;¡¡¡¡ ;\n");
-    printf(" ¦¢¡¡¡¡|¡¡|¡¡| \n");
-    printf(" /£ß£ß|,,|£ß| \n");
-    printf(" ¡¬ì£ªÄ\n");
+    printf("      ï¼ï¼â€• ãƒ•\n");
+    printf("     | ã€€_ã€€_| \n");
+    printf("    ï¼ ãƒŸï¼¿xãƒ\n");
+    printf("   /ã€€ã€€ã€€ã€€ | \n");
+    printf("  /ã€€ ;ã€€ã€€ ;\n");
+    printf(" â”‚ã€€ã€€|ã€€|ã€€| \n");
+    printf(" /ï¼¿ï¼¿|,,|ï¼¿| \n");
+    printf(" ï¼¼äºŒã¤\n");
     printf("\n");
 }
 
@@ -205,12 +205,12 @@ void clearScreen() {
 }
 
 void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain) {
-    printf("==================== ÇöÀç »óÅÂ ===================\n");
-    printf("ÇöÀç±îÁö ¸¸µç ¼öÇÁ: %d°³\n", soupCount);
-    printf("CP: %d Æ÷ÀÎÆ®\n", cpPoint);
-    printf("%sÀÌ ±âºĞ(0~3): %d\n", catName, mood);
+    printf("==================== í˜„ì¬ ìƒíƒœ ===================\n");
+    printf("í˜„ì¬ê¹Œì§€ ë§Œë“  ìˆ˜í”„: %dê°œ\n", soupCount);
+    printf("CP: %d í¬ì¸íŠ¸\n", cpPoint);
+    printf("%sì´ ê¸°ë¶„(0~3): %d\n", catName, mood);
     printMoodDesc(mood);
-    printf("Áı»ç¿ÍÀÇ °ü°è(0~4): %d\n", friendship);
+    printf("ì§‘ì‚¬ì™€ì˜ ê´€ê³„(0~4): %d\n", friendship);
     printFriendshipDesc(friendship);
     printf("==================================================\n\n");
 }
@@ -218,41 +218,51 @@ void printStatus(int soupCount, int friendship, const char* catName, int mood, i
 
 void printMoodDesc(int mood) {
     switch (mood) {
-    case 0: printf("±âºĞÀÌ ¸Å¿ì ³ª»Ş´Ï´Ù.\n"); break;
-    case 1: printf("½É½ÉÇØÇÕ´Ï´Ù.\n"); break;
-    case 2: printf("½Ä»§À» ±Á½À´Ï´Ù.\n"); break;
-    case 3: printf("°ñ°ñ¼ÛÀ» ºÎ¸¨´Ï´Ù.\n"); break;
+    case 0: printf("ê¸°ë¶„ì´ ë§¤ìš° ë‚˜ì©ë‹ˆë‹¤.\n"); break;
+    case 1: printf("ì‹¬ì‹¬í•´í•©ë‹ˆë‹¤.\n"); break;
+    case 2: printf("ì‹ë¹µì„ êµ½ìŠµë‹ˆë‹¤.\n"); break;
+    case 3: printf("ê³¨ê³¨ì†¡ì„ ë¶€ë¦…ë‹ˆë‹¤.\n"); break;
     }
 }
 
 void printFriendshipDesc(int friendship) {
     if (friendship == 0)
-        printf("°ç¿¡ ¿À´Â °ÍÁ¶Â÷ ½È¾îÇÕ´Ï´Ù.\n");
+        printf("ê³ì— ì˜¤ëŠ” ê²ƒì¡°ì°¨ ì‹«ì–´í•©ë‹ˆë‹¤.\n");
     else if (friendship == 1)
-        printf("°£½Ä ÀÚÆÇ±â Ãë±ŞÀÔ´Ï´Ù.\n");
+        printf("ê°„ì‹ ìíŒê¸° ì·¨ê¸‰ì…ë‹ˆë‹¤.\n");
     else if (friendship == 2)
-        printf("±×·°Àú·° ¾µ¸¸ÇÑ Áı»çÀÔ´Ï´Ù.\n");
+        printf("ê·¸ëŸ­ì €ëŸ­ ì“¸ë§Œí•œ ì§‘ì‚¬ì…ë‹ˆë‹¤.\n");
     else if (friendship == 3)
-        printf("ÈÇ¸¢ÇÑ Áı»ç·Î ÀÎÁ¤¹Ş°í ÀÖ½À´Ï´Ù.\n");
+        printf("í›Œë¥­í•œ ì§‘ì‚¬ë¡œ ì¸ì •ë°›ê³  ìˆìŠµë‹ˆë‹¤.\n");
     else if (friendship == 4)
-        printf("Áı»ç ²­µüÁöÀÔ´Ï´Ù.\n");
+        printf("ì§‘ì‚¬ ê»Œë”±ì§€ì…ë‹ˆë‹¤.\n");
 }
 
 int getInteractionChoice(int hasMouse, int hasLaser) {
     int choice;
     int firstPrompt = 1;
-    int maxChoice = 1;
 
-    if (hasMouse) maxChoice = 2;
-    if (hasLaser) maxChoice = (hasMouse ? 3 : 2);
+    int optionMouse = -1;
+    int optionLaser = -1;
+    int maxOption = 1;
 
     while (1) {
         if (firstPrompt) {
-            printf("\n¾î¶² »óÈ£ÀÛ¿ëÀ» ÇÏ½Ã°Ú½À´Ï±î?\n");
-            printf("0. ¾Æ¹«°Íµµ ÇÏÁö ¾ÊÀ½\n");
-            printf("1. ±Ü¾îÁÖ±â\n");
-            if (hasMouse) printf("2. Àå³­°¨ Áã·Î ³î¾ÆÁÖ±â\n");
-            if (hasLaser) printf("3. ·¹ÀÌÀú Æ÷ÀÎÅÍ·Î ³î¾ÆÁÖ±â\n");
+            int currentOption = 2; // 0: ì•„ë¬´ê²ƒë„ ì•ˆ í•¨, 1: ê¸ê¸°
+            printf("\nì–´ë–¤ ìƒí˜¸ì‘ìš©ì„ í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n");
+            printf("0. ì•„ë¬´ê²ƒë„ í•˜ì§€ ì•ŠìŒ\n");
+            printf("1. ê¸ì–´ì£¼ê¸°\n");
+
+            if (hasMouse) {
+                optionMouse = currentOption;
+                printf("%d. ì¥ë‚œê° ì¥ë¡œ ë†€ì•„ì£¼ê¸°\n", currentOption++);
+            }
+            if (hasLaser) {
+                optionLaser = currentOption;
+                printf("%d. ë ˆì´ì € í¬ì¸í„°ë¡œ ë†€ì•„ì£¼ê¸°\n", currentOption++);
+            }
+
+            maxOption = currentOption - 1;
             firstPrompt = 0;
         }
 
@@ -262,9 +272,8 @@ int getInteractionChoice(int hasMouse, int hasLaser) {
             continue;
         }
 
-        if (choice >= 0 && choice <= maxChoice)
+        if (choice >= 0 && choice <= maxOption)
             return choice;
-
     }
 }
 
@@ -297,84 +306,84 @@ void printRoom(int catPos, int prevPos) {
 void shop(int* cp, int* hasMouse, int* hasLaser, int* hasScratcher, int* hasTower) {
     int choice;
 
-    printf("»óÁ¡¿¡¼­ ¹°°ÇÀ» »ì ¼ö ÀÖ½À´Ï´Ù.\n¾î¶² ¹°°ÇÀ» ±¸¸ÅÇÒ±î¿ä?\n");
-    printf("0. ¾Æ¹« °Íµµ »çÁö ¾Ê´Â´Ù.\n");
-    printf("1. Àå³­°¨ Áã: 1 CP %s\n", *hasMouse ? "(Ç°Àı)" : "");
-    printf("2. ·¹ÀÌÀú Æ÷ÀÎÅÍ: 2 CP %s\n", *hasLaser ? "(Ç°Àı)" : "");
-    printf("3. ½ºÅ©·¡Ã³: 4 CP %s\n", *hasScratcher ? "(Ç°Àı)" : "");
-    printf("4. Ä¹ Å¸¿ö: 6 CP %s\n", *hasTower ? "(Ç°Àı)" : "");
+    printf("ìƒì ì—ì„œ ë¬¼ê±´ì„ ì‚´ ìˆ˜ ìˆìŠµë‹ˆë‹¤.\nì–´ë–¤ ë¬¼ê±´ì„ êµ¬ë§¤í• ê¹Œìš”?\n");
+    printf("0. ì•„ë¬´ ê²ƒë„ ì‚¬ì§€ ì•ŠëŠ”ë‹¤.\n");
+    printf("1. ì¥ë‚œê° ì¥: 1 CP %s\n", *hasMouse ? "(í’ˆì ˆ)" : "");
+    printf("2. ë ˆì´ì € í¬ì¸í„°: 2 CP %s\n", *hasLaser ? "(í’ˆì ˆ)" : "");
+    printf("3. ìŠ¤í¬ë˜ì²˜: 4 CP %s\n", *hasScratcher ? "(í’ˆì ˆ)" : "");
+    printf("4. ìº£ íƒ€ì›Œ: 6 CP %s\n", *hasTower ? "(í’ˆì ˆ)" : "");
 
     while (1) {
         printf(">> ");
         if (scanf_s("%d", &choice) != 1) {
             while (getchar() != '\n');
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n");
             continue;
         }
 
         if (choice == 0) {
-            printf("¾Æ¹« °Íµµ »çÁö ¾Ê¾Ò½À´Ï´Ù.\n");
+            printf("ì•„ë¬´ ê²ƒë„ ì‚¬ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\n");
             break;
         }
 
         if (choice == 1) {
             if (*hasMouse) {
-                printf("Àå³­°¨ Áã´Â ÀÌ¹Ì ±¸¸ÅÇß½À´Ï´Ù.\n");
+                printf("ì¥ë‚œê° ì¥ëŠ” ì´ë¯¸ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤.\n");
             }
             else if (*cp < 1) {
-                printf("CP°¡ ºÎÁ·ÇÕ´Ï´Ù.\n");
+                printf("CPê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.\n");
             }
             else {
                 *hasMouse = 1;
                 *cp -= 1;
-                printf("Àå³­°¨ Áã¸¦ ±¸¸ÅÇß½À´Ï´Ù. º¸À¯ CP %d Æ÷ÀÎÆ®\n", *cp);
+                printf("ì¥ë‚œê° ì¥ë¥¼ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤. ë³´ìœ  CP %d í¬ì¸íŠ¸\n", *cp);
             }
             break;
         }
         else if (choice == 2) {
             if (*hasLaser) {
-                printf("·¹ÀÌÀú Æ÷ÀÎÅÍ´Â ÀÌ¹Ì ±¸¸ÅÇß½À´Ï´Ù.\n");
+                printf("ë ˆì´ì € í¬ì¸í„°ëŠ” ì´ë¯¸ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤.\n");
             }
             else if (*cp < 2) {
-                printf("CP°¡ ºÎÁ·ÇÕ´Ï´Ù.\n");
+                printf("CPê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.\n");
             }
             else {
                 *hasLaser = 1;
                 *cp -= 2;
-                printf("·¹ÀÌÀú Æ÷ÀÎÅÍ¸¦ ±¸¸ÅÇß½À´Ï´Ù. º¸À¯ CP %d Æ÷ÀÎÆ®\n", *cp);
+                printf("ë ˆì´ì € í¬ì¸í„°ë¥¼ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤. ë³´ìœ  CP %d í¬ì¸íŠ¸\n", *cp);
             }
             break;
         }
         else if (choice == 3) {
             if (*hasScratcher) {
-                printf("½ºÅ©·¡Ã³´Â ÀÌ¹Ì ±¸¸ÅÇß½À´Ï´Ù.\n");
+                printf("ìŠ¤í¬ë˜ì²˜ëŠ” ì´ë¯¸ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤.\n");
             }
             else if (*cp < 4) {
-                printf("CP°¡ ºÎÁ·ÇÕ´Ï´Ù.\n");
+                printf("CPê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.\n");
             }
             else {
                 *hasScratcher = 1;
                 *cp -= 4;
-                printf("½ºÅ©·¡Ã³¸¦ ±¸¸ÅÇß½À´Ï´Ù. º¸À¯ CP %d Æ÷ÀÎÆ®\n", *cp);
+                printf("ìŠ¤í¬ë˜ì²˜ë¥¼ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤. ë³´ìœ  CP %d í¬ì¸íŠ¸\n", *cp);
             }
             break;
         }
         else if (choice == 4) {
             if (*hasTower) {
-                printf("Ä¹ Å¸¿ö´Â ÀÌ¹Ì ±¸¸ÅÇß½À´Ï´Ù.\n");
+                printf("ìº£ íƒ€ì›ŒëŠ” ì´ë¯¸ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤.\n");
             }
             else if (*cp < 6) {
-                printf("CP°¡ ºÎÁ·ÇÕ´Ï´Ù.\n");
+                printf("CPê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.\n");
             }
             else {
                 *hasTower = 1;
                 *cp -= 6;
-                printf("Ä¹ Å¸¿ö¸¦ ±¸¸ÅÇß½À´Ï´Ù. º¸À¯ CP %d Æ÷ÀÎÆ®\n", *cp);
+                printf("ìº£ íƒ€ì›Œë¥¼ êµ¬ë§¤í–ˆìŠµë‹ˆë‹¤. ë³´ìœ  CP %d í¬ì¸íŠ¸\n", *cp);
             }
             break;
         }
         else {
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•´ì£¼ì„¸ìš”.\n");
         }
     }
 
@@ -385,7 +394,7 @@ void shop(int* cp, int* hasMouse, int* hasLaser, int* hasScratcher, int* hasTowe
 
 const char* getRandomSoup() {
     int r = rand() % 3;
-    if (r == 0) return "°¨ÀÚ¼öÇÁ";
-    else if (r == 1) return "¾ç¼ÛÀÌ¼öÇÁ";
-    else return "ºê·ÎÄİ¸®¼öÇÁ";
+    if (r == 0) return "ê°ììˆ˜í”„";
+    else if (r == 1) return "ì–‘ì†¡ì´ìˆ˜í”„";
+    else return "ë¸Œë¡œì½œë¦¬ìˆ˜í”„";
 }
