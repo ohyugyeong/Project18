@@ -31,6 +31,23 @@ int main() {
     if (catName == NULL) {
         printf("\n메모리 할당 실패\n");
         return 1;
+        
+
+        int affection = 0, dice, choice;
+        srand(time(NULL));
+        while (1) {
+            printf("1.쓰다듬기 2.먹이주기 0.종료 > ");
+            scanf_s("%d", &choice);
+            if (choice == 0) break;
+            dice = rand() % 6 + 1;
+            if (choice == 1 && dice >= 4) affection += 2;
+            else if (choice == 2 && dice >= 3) affection += 3;
+            else if (choice == 2) affection++;
+            printf("친밀도: %d\n", affection);
+            if (affection >= 10) { printf("친해졌어요!\n"); break; }
+            
+            return 0;
+        }
     }
 
     int soupCount = 0;
@@ -134,7 +151,7 @@ int main() {
 }
 
 void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos, int hasScratcher, int hasTower) {
-    #define TOWER_POS 6
+#define TOWER_POS 6
 
     printRoom(*catPos, prevPos, hasScratcher, hasTower);
 
@@ -181,10 +198,10 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         }
     }
 
-    
+
     currentPos = *catPos;
 
-  
+
     if (currentPos == SOUP_POT && prevPos != SOUP_POT) {
         const char* soup = getRandomSoup();
         printf("%s이(가) %s를 만들었습니다!\n", catName, soup);
@@ -193,7 +210,7 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
     }
 
     if (currentPos == CAT_HOME && prevPos == CAT_HOME) {
-       
+
         (*mood)++;
         if (*mood > 3) *mood = 3;
         printf("%s은(는) 집에서 휴식을 취했습니다. 기분이 좋아졌습니다: %d --> %d\n\n", catName, *mood - 1, *mood);
@@ -206,13 +223,13 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
     }
 
     if (hasTower && currentPos == TOWER_POS) {
-        #define TOWER_POS 6
+#define TOWER_POS 6
         (*mood) += 2;
         if (*mood > 3) *mood = 3;
         printf("%s은(는) 캣타워를 뛰어다닙니다.\n기분이 제법 좋아졌습니다: %d --> %d\n\n", catName, *mood - 2, *mood);
     }
 
- 
+
     wait(1500);
     clearScreen();
 }
@@ -266,6 +283,8 @@ void printCatArt() {
 void clearScreen() {
     system("cls");
 }
+
+
 
 void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain) {
     printf("==================== 현재 상태 ===================\n");
@@ -355,8 +374,8 @@ int getInteractionChoice(int hasMouse, int hasLaser, const char* catName) {
 
 typedef struct {
     char name[20];
-    int mood;       // 기분 (0~3)
-    int affection;  // 친밀도 (0 이상)
+    int mood;       
+    int affection; 
 } Cat;
 
 int rollDice() {
@@ -366,7 +385,7 @@ int rollDice() {
 void interact(Cat* cat, int action) {
     int dice;
     switch (action) {
-    case 0: // 아무것도 하지 않음
+    case 0: 
         if (cat->mood > 0) {
             cat->mood--;
             printf("\"%s의 기분이 나빠졌습니다: %d → %d\"\n", cat->name, cat->mood + 1, cat->mood);
@@ -381,8 +400,8 @@ void interact(Cat* cat, int action) {
         break;
 
 
-    case 1: // 긁어 주기
-        // 기분 그대로
+    case 1: 
+       
         printf("\"%s의 기분은 그대로입니다 : %d\"\n", cat->name, cat->mood);
         dice = rollDice();
         if (dice >= 5) {
@@ -391,7 +410,7 @@ void interact(Cat* cat, int action) {
         }
         break;
 
-    case 2: // 장난감 쥐로 놀아 주기
+    case 2: 
         if (cat->mood < 3) {
             printf("\"장난감 쥐로 %s와 놀아 주었습니다. %s 의 기분이 조금 좋아졌습니다 : %d --> %d\"\n", cat->name, cat->name, cat->mood, cat->mood + 1);
             cat->mood++;
@@ -406,11 +425,11 @@ void interact(Cat* cat, int action) {
         }
         break;
 
-    case 3: // 레이저 포인터로 놀아 주기
+    case 3: 
         if (cat->mood <= 1) {
             printf("\"레이저 포인터로 %s와 신나게 놀아 주었습니다. %s 의 기분이 꽤 좋아졌습니다 : %d --> %d\"\n", cat->name, cat->name, cat->mood, cat->mood + 2);
             cat->mood += 2;
-            if (cat->mood > 3) cat->mood = 3;  // 최대 3으로 제한
+            if (cat->mood > 3) cat->mood = 3;  
         }
         else {
             printf("%s는 이미 기분이 좋습니다.\n", cat->name);
