@@ -14,7 +14,7 @@ void printCatArt();
 void clearScreen();
 void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain);
 void printMoodDesc(int mood);
-void printRoom(int catPos, int prevPos);
+void printRoom(int catPos, int prevPos, int hasScratcher, int hasTower);
 void printFriendshipDesc(int friendship);
 int getInteractionChoice(int hasMouse, int hasLaser, const char* catName);
 int rollDice();
@@ -133,10 +133,17 @@ int main() {
     return 0;
 }
 
-void printRoom(int catPos, int prevPos, int hasScratcher, int hasTower);
 void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos, int hasScratcher, int hasTower) {
+    // 1. TOWER_POS 상수 정의 추가 (파일 상단의 #define들과 함께 위치)
+    #define TOWER_POS 6
+
+    // 2. moveCat 함수 내 printRoom 호출을 기존 4개 인자에서 2개 인자로 변경
+    //    (printRoom 함수 시그니처와 일치하도록 수정)
+    printRoom(*catPos, prevPos, hasScratcher, hasTower);
+
     int currentPos = *catPos;
 
+    // 이동 로직
     if (*mood == 0) {
         if (currentPos > CAT_HOME) {
             (*catPos)--;
@@ -147,7 +154,7 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         }
     }
     else if (*mood == 1) {
-        if (SCRATCHER_POS > 0 && SCRATCHER_POS < MAP_WIDTH - 1) {
+        if (hasScratcher && SCRATCHER_POS > 0 && SCRATCHER_POS < MAP_WIDTH - 1) {
             if (currentPos < SCRATCHER_POS) {
                 (*catPos)++;
                 printf("%s은(는) 심심해서 스크래처쪽으로 이동합니다.\n\n", catName);
@@ -178,13 +185,39 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         }
     }
 
-    if (*catPos == SOUP_POT && currentPos != SOUP_POT) {
+    // 오브젝트에 도달했는지 확인
+    currentPos = *catPos;
+
+    // 수프 만들기 (방금 도착했거나 제자리에 있을 때)
+    if (currentPos == SOUP_POT && prevPos != SOUP_POT) {
         const char* soup = getRandomSoup();
         printf("%s이(가) %s를 만들었습니다!\n", catName, soup);
         (*soupCount)++;
         printf("현재까지 만든 수프: %d개\n\n", *soupCount);
     }
 
+    // 오브젝트 행동 처리 (기분 변화 등)
+    if (currentPos == CAT_HOME && prevPos == CAT_HOME) {
+        // 집에서 연속으로 머물 때만 기분 +1
+        (*mood)++;
+        if (*mood > 3) *mood = 3;
+        printf("%s은(는) 집에서 휴식을 취했습니다. 기분이 좋아졌습니다: %d --> %d\n\n", catName, *mood - 1, *mood);
+    }
+
+    if (hasScratcher && currentPos == SCRATCHER_POS) {
+        (*mood)++;
+        if (*mood > 3) *mood = 3;
+        printf("%s은(는) 스크래처를 긁고 놀았습니다.\n기분이 조금 좋아졌습니다: %d --> %d\n\n", catName, *mood - 1, *mood);
+    }
+
+    if (hasTower && currentPos == TOWER_POS) {
+        #define TOWER_POS 6
+        (*mood) += 2;
+        if (*mood > 3) *mood = 3;
+        printf("%s은(는) 캣타워를 뛰어다닙니다.\n기분이 제법 좋아졌습니다: %d --> %d\n\n", catName, *mood - 2, *mood);
+    }
+
+    // 방 그리기 및 대기
     printRoom(*catPos, prevPos, hasScratcher, hasTower);
     wait(1500);
     clearScreen();
