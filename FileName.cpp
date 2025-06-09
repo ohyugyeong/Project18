@@ -134,16 +134,12 @@ int main() {
 }
 
 void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos, int hasScratcher, int hasTower) {
-    // 1. TOWER_POS 상수 정의 추가 (파일 상단의 #define들과 함께 위치)
     #define TOWER_POS 6
 
-    // 2. moveCat 함수 내 printRoom 호출을 기존 4개 인자에서 2개 인자로 변경
-    //    (printRoom 함수 시그니처와 일치하도록 수정)
     printRoom(*catPos, prevPos, hasScratcher, hasTower);
 
     int currentPos = *catPos;
 
-    // 이동 로직
     if (*mood == 0) {
         if (currentPos > CAT_HOME) {
             (*catPos)--;
@@ -185,10 +181,10 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         }
     }
 
-    // 오브젝트에 도달했는지 확인
+    
     currentPos = *catPos;
 
-    // 수프 만들기 (방금 도착했거나 제자리에 있을 때)
+  
     if (currentPos == SOUP_POT && prevPos != SOUP_POT) {
         const char* soup = getRandomSoup();
         printf("%s이(가) %s를 만들었습니다!\n", catName, soup);
@@ -196,9 +192,8 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         printf("현재까지 만든 수프: %d개\n\n", *soupCount);
     }
 
-    // 오브젝트 행동 처리 (기분 변화 등)
     if (currentPos == CAT_HOME && prevPos == CAT_HOME) {
-        // 집에서 연속으로 머물 때만 기분 +1
+       
         (*mood)++;
         if (*mood > 3) *mood = 3;
         printf("%s은(는) 집에서 휴식을 취했습니다. 기분이 좋아졌습니다: %d --> %d\n\n", catName, *mood - 1, *mood);
@@ -217,8 +212,7 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         printf("%s은(는) 캣타워를 뛰어다닙니다.\n기분이 제법 좋아졌습니다: %d --> %d\n\n", catName, *mood - 2, *mood);
     }
 
-    // 방 그리기 및 대기
-    printRoom(*catPos, prevPos, hasScratcher, hasTower);
+ 
     wait(1500);
     clearScreen();
 }
@@ -359,10 +353,84 @@ int getInteractionChoice(int hasMouse, int hasLaser, const char* catName) {
     }
 }
 
+typedef struct {
+    char name[20];
+    int mood;       // 기분 (0~3)
+    int affection;  // 친밀도 (0 이상)
+} Cat;
 
 int rollDice() {
     return rand() % 6 + 1;
 }
+
+void interact(Cat* cat, int action) {
+    int dice;
+    switch (action) {
+    case 0: // 아무것도 하지 않음
+        if (cat->mood > 0) {
+            cat->mood--;
+            printf("\"%s의 기분이 나빠졌습니다: %d → %d\"\n", cat->name, cat->mood + 1, cat->mood);
+        }
+        dice = rollDice();
+        if (dice <= 5) {
+            if (cat->affection > 0) {
+                cat->affection--;
+                printf("집사와의 관계가 나빠집니다.\n");
+            }
+        }
+        break;
+
+
+    case 1: // 긁어 주기
+        // 기분 그대로
+        printf("\"%s의 기분은 그대로입니다 : %d\"\n", cat->name, cat->mood);
+        dice = rollDice();
+        if (dice >= 5) {
+            cat->affection++;
+            printf("집사와의 관계가 좋아집니다!\n");
+        }
+        break;
+
+    case 2: // 장난감 쥐로 놀아 주기
+        if (cat->mood < 3) {
+            printf("\"장난감 쥐로 %s와 놀아 주었습니다. %s 의 기분이 조금 좋아졌습니다 : %d --> %d\"\n", cat->name, cat->name, cat->mood, cat->mood + 1);
+            cat->mood++;
+        }
+        else {
+            printf("%s의 기분이 이미 최고입니다.\n", cat->name);
+        }
+        dice = rollDice();
+        if (dice >= 4) {
+            cat->affection++;
+            printf("집사와의 관계가 좋아집니다!\n");
+        }
+        break;
+
+    case 3: // 레이저 포인터로 놀아 주기
+        if (cat->mood <= 1) {
+            printf("\"레이저 포인터로 %s와 신나게 놀아 주었습니다. %s 의 기분이 꽤 좋아졌습니다 : %d --> %d\"\n", cat->name, cat->name, cat->mood, cat->mood + 2);
+            cat->mood += 2;
+            if (cat->mood > 3) cat->mood = 3;  // 최대 3으로 제한
+        }
+        else {
+            printf("%s는 이미 기분이 좋습니다.\n", cat->name);
+        }
+        dice = rollDice();
+        if (dice >= 2) {
+            cat->affection++;
+            printf("집사와의 관계가 좋아졌습니다.\n");
+        }
+        break;
+
+    default:
+        printf("알 수 없는 행동입니다.\n");
+        break;
+    }
+    printf("현재 친밀도: %d\n", cat->affection);
+}
+
+
+
 
 void wait(int ms) {
     Sleep(ms);
