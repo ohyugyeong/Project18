@@ -20,7 +20,8 @@ int getInteractionChoice(int hasMouse, int hasLaser, const char* catName);
 int rollDice();
 void wait(int ms);
 const char* getRandomSoup();
-void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos);
+void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos,
+    int hasScratcher, int hasTower);
 void shop(int* cp, int* hasMouse, int* hasLaser, int* hasScratcher, int* hasTower);
 
 int main() {
@@ -118,7 +119,7 @@ int main() {
         printStatus(soupCount, friendship, catName, mood, cpPoint, cpGain);
 
         prevPos = catPos;
-        moveCat(&catPos, &mood, &soupCount, catName, prevPos);
+        moveCat(&catPos, &mood, &soupCount, catName, prevPos, hasScratcher, hasTower);
 
         shop(&cpPoint, &hasMouse, &hasLaser, &hasScratcher, &hasTower);
 
@@ -132,7 +133,8 @@ int main() {
     return 0;
 }
 
-void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos) {
+void printRoom(int catPos, int prevPos, int hasScratcher, int hasTower);
+void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int prevPos, int hasScratcher, int hasTower) {
     int currentPos = *catPos;
 
     if (*mood == 0) {
@@ -183,9 +185,42 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
         printf("현재까지 만든 수프: %d개\n\n", *soupCount);
     }
 
-    printRoom(*catPos, prevPos);
+    printRoom(*catPos, prevPos, hasScratcher, hasTower);
     wait(1500);
     clearScreen();
+}
+
+void printRoom(int catPos, int prevPos, int hasScratcher, int hasTower) {
+    printf(" ###############\n");
+    printf(" #");
+
+    for (int i = 1; i < MAP_WIDTH - 1; i++) {
+        if (i == 1)
+            printf("H");
+        else if (i == 5 && hasTower)
+            printf("T");
+        else if (i == 7 && hasScratcher)
+            printf("S");
+        else if (i == 8)
+            printf("B");
+        else
+            printf(" ");
+    }
+
+    printf("#\n");
+
+    printf(" #");
+    for (int i = 1; i < MAP_WIDTH - 1; i++) {
+        if (i == catPos)
+            printf("C");
+        else if (i == prevPos)
+            printf(".");
+        else
+            printf(" ");
+    }
+
+    printf("#\n");
+    printf(" ###############\n");
 }
 
 void printCatArt() {
