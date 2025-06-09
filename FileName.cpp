@@ -16,7 +16,7 @@ void printStatus(int soupCount, int friendship, const char* catName, int mood, i
 void printMoodDesc(int mood);
 void printRoom(int catPos, int prevPos);
 void printFriendshipDesc(int friendship);
-int getInteractionChoice(int hasMouse, int hasLaser);
+int getInteractionChoice(int hasMouse, int hasLaser, const char* catName);
 int rollDice();
 void wait(int ms);
 const char* getRandomSoup();
@@ -41,7 +41,6 @@ int main() {
     int cpPoint = 4;
     int cpGain = 0;
     int hasMouse = 0, hasLaser = 0, hasScratcher = 0, hasTower = 0;
-    int getInteractionChoice(int hasMouse, int hasLaser);
 
     printf("**** 야옹이와 수프 ****\n");
     printCatArt();
@@ -73,9 +72,11 @@ int main() {
                 printf("%s의 기분이 나빠집니다: %d → %d\n", catName, mood, mood - 1);
                 mood--;
             }
+            wait(1500);
+            clearScreen();
         }
 
-        int choice = getInteractionChoice(hasMouse, hasLaser);
+        int choice = getInteractionChoice(hasMouse, hasLaser, catName);
 
         if (choice == 0) {
             printf("아무것도 하지 않습니다.\n");
@@ -238,28 +239,28 @@ void printFriendshipDesc(int friendship) {
         printf("집사 껌딱지입니다.\n");
 }
 
-int getInteractionChoice(int hasMouse, int hasLaser) {
+int getInteractionChoice(int hasMouse, int hasLaser, const char* catName) {
     int choice;
     int firstPrompt = 1;
-
-    int optionMouse = -1;
-    int optionLaser = -1;
     int maxOption = 1;
+    int optionMouse = -1, optionLaser = -1;
 
     while (1) {
         if (firstPrompt) {
-            int currentOption = 2; // 0: 아무것도 안 함, 1: 긁기
-            printf("\n어떤 상호작용을 하시겠습니까?\n");
-            printf("0. 아무것도 하지 않음\n");
-            printf("1. 긁어주기\n");
+            int currentOption = 2;
+
+            printf("어떤 상호작용을 하시겠습니까?\n");
+            printf("0.아무것도 하지 않음\n");
+            printf("1.긁어 주기\n");
 
             if (hasMouse) {
                 optionMouse = currentOption;
-                printf("%d. 장난감 쥐로 놀아주기\n", currentOption++);
+                printf("%d. 장난감 쥐로 놀아 주기\n", currentOption++);
             }
+
             if (hasLaser) {
                 optionLaser = currentOption;
-                printf("%d. 레이저 포인터로 놀아주기\n", currentOption++);
+                printf("%d. 레이저 포인터로 놀아 주기\n", currentOption++);
             }
 
             maxOption = currentOption - 1;
@@ -272,8 +273,21 @@ int getInteractionChoice(int hasMouse, int hasLaser) {
             continue;
         }
 
-        if (choice >= 0 && choice <= maxOption)
+        if (choice >= 0 && choice <= maxOption) {
+            if (choice == 0) {
+                printf("아무것도 하지 않습니다.");
+            }
+            else if (choice == 1) {
+                printf("%s이를 긁어 주었습니다.", catName);
+            }
+            else if (choice == optionMouse) {
+                printf("장난감 쥐로 %s이와 놀아 주었습니다.", catName);
+            }
+            else if (choice == optionLaser) {
+                printf("레이저 포인터로 %s이와 놀아 주었습니다.", catName);
+            }
             return choice;
+        }
     }
 }
 
