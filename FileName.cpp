@@ -290,17 +290,18 @@ void printRoom(int catPos, int prevPos) {
 void shop(int* cp, int* hasMouse, int* hasLaser, int* hasScratcher, int* hasTower) {
     int choice;
 
-    while (1) {
-        printf("상점에서 물건을 살 수 있습니다.\n어떤 물건을 구매할까요?\n");
-        printf("0. 아무 것도 사지 않는다.\n");
-        printf("1. 장난감 쥐: 1 CP %s\n", *hasMouse ? "(품절)" : "");
-        printf("2. 레이저 포인터: 2 CP %s\n", *hasLaser ? "(품절)" : "");
-        printf("3. 스크래처: 4 CP %s\n", *hasScratcher ? "(품절)" : "");
-        printf("4. 캣 타워: 6 CP %s\n", *hasTower ? "(품절)" : "");
-        printf(">> ");
+    printf("상점에서 물건을 살 수 있습니다.\n어떤 물건을 구매할까요?\n");
+    printf("0. 아무 것도 사지 않는다.\n");
+    printf("1. 장난감 쥐: 1 CP %s\n", *hasMouse ? "(품절)" : "");
+    printf("2. 레이저 포인터: 2 CP %s\n", *hasLaser ? "(품절)" : "");
+    printf("3. 스크래처: 4 CP %s\n", *hasScratcher ? "(품절)" : "");
+    printf("4. 캣 타워: 6 CP %s\n", *hasTower ? "(품절)" : "");
 
+    while (1) {
+        printf(">> ");
         if (scanf_s("%d", &choice) != 1) {
             while (getchar() != '\n');
+            printf("잘못된 입력입니다. 다시 선택해주세요.\n");
             continue;
         }
 
@@ -312,71 +313,64 @@ void shop(int* cp, int* hasMouse, int* hasLaser, int* hasScratcher, int* hasTowe
         if (choice == 1) {
             if (*hasMouse) {
                 printf("장난감 쥐는 이미 구매했습니다.\n");
-                break;
             }
             else if (*cp < 1) {
                 printf("CP가 부족합니다.\n");
-                printf(">> ");
             }
             else {
                 *hasMouse = 1;
                 *cp -= 1;
                 printf("장난감 쥐를 구매했습니다. 보유 CP %d 포인트\n", *cp);
-                break;
             }
+            break;
         }
         else if (choice == 2) {
             if (*hasLaser) {
                 printf("레이저 포인터는 이미 구매했습니다.\n");
-                break;
             }
             else if (*cp < 2) {
                 printf("CP가 부족합니다.\n");
-                printf(">> ");
             }
             else {
                 *hasLaser = 1;
                 *cp -= 2;
                 printf("레이저 포인터를 구매했습니다. 보유 CP %d 포인트\n", *cp);
-                break;
             }
+            break;
         }
         else if (choice == 3) {
             if (*hasScratcher) {
                 printf("스크래처는 이미 구매했습니다.\n");
-                break;
             }
             else if (*cp < 4) {
                 printf("CP가 부족합니다.\n");
-                printf(">> ");
             }
             else {
                 *hasScratcher = 1;
                 *cp -= 4;
                 printf("스크래처를 구매했습니다. 보유 CP %d 포인트\n", *cp);
-                break;
             }
+            break;
         }
         else if (choice == 4) {
             if (*hasTower) {
                 printf("캣 타워는 이미 구매했습니다.\n");
-                break;
             }
             else if (*cp < 6) {
                 printf("CP가 부족합니다.\n");
-                printf(">> ");
             }
             else {
                 *hasTower = 1;
                 *cp -= 6;
                 printf("캣 타워를 구매했습니다. 보유 CP %d 포인트\n", *cp);
-                break;
             }
+            break;
         }
         else {
             printf("잘못된 입력입니다. 다시 선택해주세요.\n");
         }
     }
+
     wait(1500);
     clearScreen();
 }
