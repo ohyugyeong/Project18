@@ -41,7 +41,7 @@ int main() {
     int cpPoint = 4;
     int cpGain = 0;
     int hasMouse = 0, hasLaser = 0, hasScratcher = 0, hasTower = 0;
-
+    int getInteractionChoice(int hasMouse, int hasLaser);
 
     printf("**** 야옹이와 수프 ****\n");
     printCatArt();
@@ -75,7 +75,7 @@ int main() {
             }
         }
 
-        int choice = getInteractionChoice();
+        int choice = getInteractionChoice(hasMouse, hasLaser);
 
         if (choice == 0) {
             printf("아무것도 하지 않습니다.\n");
@@ -206,8 +206,8 @@ void clearScreen() {
 
 void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain) {
     printf("==================== 현재 상태 ===================\n");
-    printf("CP: %d 포인트\n", cpPoint);
     printf("현재까지 만든 수프: %d개\n", soupCount);
+    printf("CP: %d 포인트\n", cpPoint);
     printf("%s이 기분(0~3): %d\n", catName, mood);
     printMoodDesc(mood);
     printf("집사와의 관계(0~4): %d\n", friendship);
@@ -238,29 +238,37 @@ void printFriendshipDesc(int friendship) {
         printf("집사 껌딱지입니다.\n");
 }
 
-int getInteractionChoice() {
+int getInteractionChoice(int hasMouse, int hasLaser) {
     int choice;
     int firstPrompt = 1;
+    int maxChoice = 1;
+
+    if (hasMouse) maxChoice = 2;
+    if (hasLaser) maxChoice = (hasMouse ? 3 : 2);
 
     while (1) {
         if (firstPrompt) {
-            printf("\n어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음  1. 긁어주기\n>> ");
+            printf("\n어떤 상호작용을 하시겠습니까?\n");
+            printf("0. 아무것도 하지 않음\n");
+            printf("1. 긁어주기\n");
+            if (hasMouse) printf("2. 장난감 쥐로 놀아주기\n");
+            if (hasLaser) printf("3. 레이저 포인터로 놀아주기\n");
             firstPrompt = 0;
         }
-        else {
-            printf(">> ");
-        }
 
+        printf(">> ");
         if (scanf_s("%d", &choice) != 1) {
             while (getchar() != '\n');
             continue;
         }
 
-        if (choice == 0 || choice == 1) break;
-    }
+        if (choice >= 0 && choice <= maxChoice)
+            return choice;
 
-    return choice;
+        printf("잘못된 입력입니다. 다시 선택해주세요.\n");
+    }
 }
+
 
 int rollDice() {
     return rand() % 6 + 1;
