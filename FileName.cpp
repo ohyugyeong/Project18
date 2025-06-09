@@ -37,7 +37,7 @@ int main() {
     int prevPos = CAT_HOME;
     int mood = 3;
     int threshold = 0;
-    int cpPoint = 0;
+    int cpPoint = 4;
     int cpGain = 0;
 
     printf("**** 야옹이와 수프 ****\n");
@@ -177,7 +177,7 @@ void moveCat(int* catPos, int* mood, int* soupCount, const char* catName, int pr
     }
 
     printRoom(*catPos, prevPos);
-    wait(2000);
+    wait(1500);
     clearScreen();
 }
 
@@ -200,15 +200,15 @@ void clearScreen() {
 
 void printStatus(int soupCount, int friendship, const char* catName, int mood, int cpPoint, int cpGain) {
     printf("==================== 현재 상태 ===================\n");
+    printf("CP: %d 포인트\n", cpPoint);
     printf("현재까지 만든 수프: %d개\n", soupCount);
     printf("%s이 기분(0~3): %d\n", catName, mood);
     printMoodDesc(mood);
     printf("집사와의 관계(0~4): %d\n", friendship);
     printFriendshipDesc(friendship);
-    printf("%s의 기분과 친밀도에 따라서 CP가 %d 포인트 생산되었습니다.\n", catName, cpGain);
-    printf("보유 CP: %d 포인트\n", cpPoint);
     printf("==================================================\n\n");
 }
+
 
 void printMoodDesc(int mood) {
     switch (mood) {
