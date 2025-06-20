@@ -1,3 +1,6 @@
+//148 오유경
+// 상태창 변경, 방 그리기, 기분, 이동, 행동, 상호작용 입력, 상호작용 처리, CP 생산, 상점, 돌발 퀘스트까지 했습니다.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
